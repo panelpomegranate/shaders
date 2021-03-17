@@ -24,7 +24,8 @@ object TriangleExample extends LwjglApp {
     0.45f, 0.5f, 0.0f
   )
 
-  var shaderProgram = 0
+  var SPOrange = 0
+  var SPYellow = 0
   var vao1 = 0
   var vbo1 = 0
 
@@ -67,6 +68,10 @@ object TriangleExample extends LwjglApp {
 
 
     val vertexShader: Int = glCreateShader(GL_VERTEX_SHADER)
+
+    val Yellow: Int = glCreateShader(GL_FRAGMENT_SHADER)
+
+
     val vertexShaderString: String = Source.fromResource("shaders/triangleExample.vert").getLines().mkString("\n")
 
     {
@@ -89,9 +94,14 @@ object TriangleExample extends LwjglApp {
     val fragmentShader: Int = glCreateShader(GL_FRAGMENT_SHADER)
     val fragmentShaderString: String = Source.fromResource("shaders/triangleExample.frag").getLines().mkString("\n")
 
+    val YellowString: String = Source.fromResource("shaders/orangeExample.frag").getLines().mkString("\n")
+
     {
       glShaderSource(fragmentShader, fragmentShaderString)
       glCompileShader(fragmentShader)
+
+      glShaderSource(Yellow, YellowString)
+      glCompileShader(Yellow)
 
       val success: Array[Int] = Array(0)
 
@@ -107,17 +117,22 @@ object TriangleExample extends LwjglApp {
     }
 
 
-    shaderProgram = glCreateProgram()
+    SPOrange = glCreateProgram()
+    SPYellow = glCreateProgram()
 
-    glAttachShader(shaderProgram, vertexShader)
-    glAttachShader(shaderProgram, fragmentShader)
-    glLinkProgram(shaderProgram)
+    glAttachShader(SPOrange, vertexShader)
+    glAttachShader(SPOrange, fragmentShader)
+    glLinkProgram(SPOrange)
+
+    glAttachShader(SPYellow, vertexShader)
+    glAttachShader(SPYellow, Yellow)
+    glLinkProgram(SPYellow)
 
     {
       val success: Array[Int] = Array(0)
-      glGetProgramiv(shaderProgram, GL_LINK_STATUS, success);
+      glGetProgramiv(SPOrange, GL_LINK_STATUS, success);
       if (success(0) == 0) {
-        val res = glGetProgramInfoLog(shaderProgram);
+        val res = glGetProgramInfoLog(SPOrange);
         println(s"Error linking program $res")
       }
     }
@@ -128,11 +143,13 @@ object TriangleExample extends LwjglApp {
   override def drawCall(): Unit = {
 
     // 2. use our shader program when we want to render an object
-    glUseProgram(shaderProgram)
+    glUseProgram(SPOrange)
 
     glBindVertexArray(vao1)
     //drawing vao, already bound in init  glBindVertexArray(vao)
     glDrawArrays(GL11.GL_TRIANGLES, 0, 3)
+
+    glUseProgram(SPYellow)
 
     glBindVertexArray(vao2)
     //drawing vao, already bound in init  glBindVertexArray(vao)
