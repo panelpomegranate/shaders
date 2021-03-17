@@ -7,7 +7,7 @@ scalaVersion := "2.13.4"
 
 libraryDependencies ++= {
   val version = "3.2.3"
-  val os = "linux" // "windows"
+  val os = "windows"
 
   Seq(
     "lwjgl",

@@ -12,31 +12,56 @@ import java.nio.{FloatBuffer, IntBuffer}
 import scala.io.Source
 
 object TriangleExample extends LwjglApp {
-  val vertices: Array[Float] = Array(
-    -0.5f, -0.5f, 0.0f,
-    0.5f, -0.5f, 0.0f,
-    0.0f, 0.5f, 0.0f
+  val vertices1: Array[Float] = Array(
+    -0.9f, -0.5f, 0.0f,
+    -0.0f, -0.5f, 0.0f,
+    -0.45f, 0.5f, 0.0f,
+  )
+
+  val vertices2: Array[Float] = Array(
+    0.0f, -0.5f, 0.0f,
+    0.9f, -0.5f, 0.0f,
+    0.45f, 0.5f, 0.0f
   )
 
   var shaderProgram = 0
-  var vao = 0
-  var vbo = 0
+  var vao1 = 0
+  var vbo1 = 0
+
+  var vao2 = 0
+  var vbo2 = 0
 
   override def userInit(): Unit = {
-    vao = glGenVertexArrays()
-    vbo = glGenBuffers()
+    vao1 = glGenVertexArrays()
+    vbo1 = glGenBuffers()
+
+    vao2 = glGenVertexArrays()
+    vbo2 = glGenBuffers()
 
 
     // 2. copy our vertices array in a buffer for OpenGL to use
-    glBindBuffer(GL_ARRAY_BUFFER, vbo)
+    glBindBuffer(GL_ARRAY_BUFFER, vbo1)
 
     // 3. then set our vertex attributes pointers
-    glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW)
+    glBufferData(GL_ARRAY_BUFFER, vertices1, GL_STATIC_DRAW)
 
     //using VAO
-    glBindVertexArray(vao)
+    glBindVertexArray(vao1)
     //configure array format
     glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 3 * 4, 0)
+    //enable array
+    glEnableVertexAttribArray(0)
+
+    // 2. copy our vertices array in a buffer for OpenGL to use
+    glBindBuffer(GL_ARRAY_BUFFER, vbo2)
+
+    // 3. then set our vertex attributes pointers
+    glBufferData(GL_ARRAY_BUFFER, vertices2, GL_STATIC_DRAW)
+
+    //using VAO
+    glBindVertexArray(vao2)
+    //configure array format
+    glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 3*4, 0)
     //enable array
     glEnableVertexAttribArray(0)
 
@@ -105,11 +130,14 @@ object TriangleExample extends LwjglApp {
     // 2. use our shader program when we want to render an object
     glUseProgram(shaderProgram)
 
-
-    glBindVertexArray(vao)
-
+    glBindVertexArray(vao1)
     //drawing vao, already bound in init  glBindVertexArray(vao)
     glDrawArrays(GL11.GL_TRIANGLES, 0, 3)
+
+    glBindVertexArray(vao2)
+    //drawing vao, already bound in init  glBindVertexArray(vao)
+    glDrawArrays(GL11.GL_TRIANGLES, 0, 3)
+
 
 
   }
